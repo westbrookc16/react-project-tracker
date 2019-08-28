@@ -4,22 +4,23 @@ import React, { useState, useContext, useEffect } from "react";
 import Timer from "./Timer";
 import { useScreenReader } from "./hooks/screenReader";
 const Tasks = ({ id }) => {
-  const [task, setTask] = useState({
+  const initialTask = {
     name: "",
     desc: "",
     dueDate: "",
     status: "Not Started",
     lastHistoryID: null
-  });
+  };
+  const [task, setTask] = useState(initialTask);
   const [msg, setMsg] = useScreenReader();
   const [tasks, setTasks] = useState([]);
   const firebase = useContext(FirebaseContext);
-  const statusChange = (id, status) => {
+  const statusChange = (id, status, lastHistoryID) => {
     setTasks(t => {
       return t.map(a => {
         if (a.id === id) {
           setMsg(`${a.name} was ${setVerbalStatus(status)} successfully.`);
-          return { ...a, status };
+          return { ...a, status, lastHistoryID };
         } else {
           return a;
         }
@@ -96,6 +97,7 @@ const Tasks = ({ id }) => {
     task.projectID = id;
     const res = await firebase.db.collection("tasks").add(task);
     setTasks([...tasks, { id: res.id, ...task }]);
+    setTask(initialTask);
   }
   return (
     <div>

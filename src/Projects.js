@@ -40,6 +40,7 @@ const Projects = () => {
         return [...p, { id: response.id, ...data }];
       });
       setScreenReaderMsg(`Project ${data.projectName} added successfully.`);
+      setProjectName(``);
     } catch (e) {
       console.table(e);
     }

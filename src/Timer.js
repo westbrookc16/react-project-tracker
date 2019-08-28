@@ -28,7 +28,7 @@ const Timer = ({ id, status, onStatusChange, lastHistoryID }) => {
           .doc(lastHistoryID)
           .set({ endDate: clickDate }, { merge: true });
       }
-      onStatusChange(id, status);
+      onStatusChange(id, status, historyData.id);
     } catch (e) {
       console.table(e);
     }
