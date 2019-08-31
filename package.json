@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reach/alert": "^0.1.5",
+    "@reach/alert-dialog": "^0.2.9",
     "firebase": "^6.4.1",
     "firebase-tools": "^7.3.0",
     "react": "^16.9.0",

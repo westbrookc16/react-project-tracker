@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, Redirect } from "react-router-dom";
+import ProjectItem from "./ProjectItem";
+
+import { Redirect } from "react-router-dom";
 import { FirebaseContext } from "./firebase/firebase";
 import { useScreenReader } from "./hooks/screenReader";
 import { UserContext } from "./firebase/FirebaseUser";
@@ -20,8 +22,8 @@ const Projects = () => {
         .collection("projects")
         .doc(id)
         .delete();
-      setProjects(p => {
-        return p.filter(value => value.id !== id);
+      setProjects(q => {
+        return q.filter(value => value.id !== id);
       });
       setScreenReaderMsg(`Project ${projectName} was removed successfully.`);
     } catch (e) {
@@ -48,18 +50,16 @@ const Projects = () => {
   const projectList = projects
     ? projects.map((p, i) => {
         const { id, projectName } = p;
+
         return (
           <li key={id}>
-            <button
-              onClick={e => {
-                e.preventDefault();
+            <ProjectItem
+              name={projectName}
+              id={id}
+              removeProject={() => {
                 removeProject(p);
               }}
-            >
-              Remove
-            </button>
-            <br />
-            <Link to={`/project/${id}`}>{projectName}</Link>
+            ></ProjectItem>
           </li>
         );
       })
