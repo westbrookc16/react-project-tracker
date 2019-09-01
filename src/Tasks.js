@@ -1,7 +1,8 @@
 import { FirebaseContext } from "./firebase/firebase";
 import Alert from "@reach/alert";
 import React, { useState, useContext, useEffect } from "react";
-import Timer from "./Timer";
+import TaskItem from "./TaskItem";
+
 import { useScreenReader } from "./hooks/screenReader";
 const Tasks = ({ id }) => {
   const initialTask = {
@@ -27,6 +28,7 @@ const Tasks = ({ id }) => {
       });
     });
   };
+
   const setVerbalStatus = status => {
     switch (status) {
       case "Start":
@@ -57,33 +59,7 @@ const Tasks = ({ id }) => {
     getTasks(id);
   }, [id, firebase.db]);
   const trs = tasks.map(value => {
-    const { id, name, desc, status, lastHistoryID } = value;
-    function friendlyStatus(status) {
-      switch (status) {
-        case "Start": {
-          return "In Progress";
-        }
-        case "Stop": {
-          return "Stopped";
-        }
-        default: {
-          return status;
-        }
-      }
-    }
-    return (
-      <tr key={id}>
-        <td>{name}</td>
-        <td>{desc}</td>
-        <td>{friendlyStatus(status)}</td>
-        <Timer
-          status={status}
-          lastHistoryID={lastHistoryID}
-          id={id}
-          onStatusChange={statusChange}
-        />
-      </tr>
-    );
+    return <TaskItem {...value} key={value.id} statusChange={statusChange} />;
   });
   const { name, desc } = task;
   const handleChange = e => {
@@ -97,7 +73,9 @@ const Tasks = ({ id }) => {
     task.projectID = id;
     const res = await firebase.db.collection("tasks").add(task);
     setTasks([...tasks, { id: res.id, ...task }]);
+
     setTask(initialTask);
+    setMsg(`${task.name} was added successfully.`);
   }
   return (
     <div>
