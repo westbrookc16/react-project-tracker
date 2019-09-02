@@ -58,8 +58,24 @@ const Tasks = ({ id }) => {
 
     getTasks(id);
   }, [id, firebase.db]);
+  const deleteTask = async id => {
+    await firebase.db
+      .collection("tasks")
+      .doc(id)
+      .delete();
+    setTasks(t => {
+      return t.filter(value => value.id !== id);
+    });
+  };
   const trs = tasks.map(value => {
-    return <TaskItem {...value} key={value.id} statusChange={statusChange} />;
+    return (
+      <TaskItem
+        {...value}
+        key={value.id}
+        statusChange={statusChange}
+        deleteTask={deleteTask}
+      />
+    );
   });
   const { name, desc } = task;
   const handleChange = e => {
@@ -82,6 +98,7 @@ const Tasks = ({ id }) => {
       <table>
         <thead>
           <tr>
+            <th>Delete</th>
             <th>Name</th>
             <th>Desc</th>
             <th>Status</th>
